@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link , Navigate, useNavigate} from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
 
@@ -40,7 +41,7 @@ function LoginPage() {
         password: ""
       });
 
-
+        navigate("/")
 
     } catch (error) {
 

@@ -1,30 +1,69 @@
+
 import React from 'react'
-import Login from './Pages/Login';
-import Singup from './Pages/Singup';
+import Login from './Pages/Login'
+import Signup from './Pages/Signup'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ToastContainer} from "react-toastify";
+import MainLayout from './Layouts/MainLayouts'
+import Chat from './pages/Chat'
+import Group from './pages/Group'
+import Profile from './pages/Profile'
 import Page from './Pages/Page';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Signup />
+  },
+  {
+    path: "/signup",
+    element: <Signup />
+  },
+  {
+    path: "/login",
+    element: <Login />
+  },
+  {
+    path:"/",
+    element:<MainLayout/>,
+    children:[
+      {
+        path:"chat",
+        element:(
+          <div className='flex items-center justify-center h-screen text-gray-600 font-semibold'>Select user to start chat</div>
+        )
+      },
+      {
+        path:"chat/:userId",
+        element:<Chat/>
+      },
+      // {
+      //   path:"group/groupId",
+      //   element:<Group/>
+      // },
+      {
+        path:"profile",
+        element:<Profile/>
+      },
+      
+    ]
+  },
+  {
+    path: "*",
+    element: <Page/>
+  }
+])
 
-function App() {
+const App = () => {
   return (
-   <>
-    <BrowserRouter>
-       <ToastContainer
-       position="top-right"
+    <>
+      <ToastContainer 
+        position='top-right'
         autoClose={3000}
-       />
-      <Routes>
-        <Route path="/" element={<Singup/>} />
-        <Route path="/Login" element={<Login/>} />
-        <Route path="*" element={<Page/>} />
-      </Routes>
-    </BrowserRouter>
-   </>   
-
+        />
+      <RouterProvider router={router} />
+    </>
   )
 }
 
 export default App
-

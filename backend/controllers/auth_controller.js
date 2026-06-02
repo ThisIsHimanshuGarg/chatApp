@@ -84,5 +84,46 @@ console.log(token);
   }
 };
 
+const getProfile = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const getUser = await User.findById(userId).select("-password");
+        res.status(200).json({
+            message: "this is Profile page ",
+            user: getUser
+        });
+    } catch (error) {
+        res.status(500).json({ message: "server error" })
+    }
+};
 
-export {signUp , login};
+const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user._id
+        const updateUser = await User.findByIdAndUpdate(userId ,req.body, {new:true})
+
+        res.status(200).json({
+            message: "Profile update successfully",
+            data: updateUser
+        })
+    } catch (error) {
+
+    }
+}
+const getAllContacts = async (req, res) => {
+    try {
+        const logingUserId = req.user._id;
+        const query = { _id: { $ne: logingUserId } }
+        const user = await User.find(query)
+
+        res.status(200).json({
+            message: "get all contacts list",
+            data: user
+        })
+    } catch (error) {
+
+    }
+}
+
+
+export {signUp , login,getProfile,updateProfile,getAllContacts};
