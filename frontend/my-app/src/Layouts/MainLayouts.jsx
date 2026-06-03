@@ -43,10 +43,9 @@ const MainLayout = () => {
     ]
     const fetchContacts = async () => {
         try {
-            const port=import.meta.env.VITE_API_URL;
-            const res = await axios.get(`${port}/api/getAllContacts`, {
+            const res = await axios.get(`http://localhost:5000/api/getAllContacts`, {
                 headers: {
-                    Authorization: `Bearer ${token} `
+                    Authorization: `Bearer ${token}`
                 }
             })
             console.log(res.data.data);
@@ -65,7 +64,7 @@ const MainLayout = () => {
                 {/* header */}
                 <div className="bg-[#0b6157] px-4 py-4 flex items-center justify-between">
                     <div className="text-white font-semibold text-lg">
-                        {user.fullName}
+                        {user.name}
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -131,7 +130,7 @@ const MainLayout = () => {
                                                     className="w-full h-full object-cover"
                                                 />
                                             ) : (
-                                                c.fullName.charAt(0)
+                                                c.name.charAt(0)
                                             )}
                                         </div>
                                     </div>
@@ -139,7 +138,7 @@ const MainLayout = () => {
                                     <div className="">
                                         <div className="flex justify-between items-center">
                                             <p className="font-medium text-gray-900 text-sm">
-                                                {c.fullName}
+                                                {c.name}
                                             </p>
                                         </div>
 
