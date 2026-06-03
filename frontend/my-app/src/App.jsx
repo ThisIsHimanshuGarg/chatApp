@@ -1,14 +1,14 @@
 
 import React from 'react'
-import Login from './Pages/Login'
-import Signup from './Pages/Signup'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ToastContainer} from "react-toastify";
 import MainLayout from './Layouts/MainLayouts'
 import Chat from './pages/Chat'
 import Group from './pages/Group'
 import Profile from './pages/Profile'
-import Page from './Pages/Page';
+import Page from './pages/Page';
 
 const router = createBrowserRouter([
   {
