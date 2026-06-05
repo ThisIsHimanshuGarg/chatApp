@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import axios from "axios";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function LoginPage() {
@@ -27,13 +27,16 @@ function LoginPage() {
 
     try {
       setLoading(true)
-      const port=import.meta.env.VITE_API_URL;
+      const port= import.meta.env.VITE_API_URL;
 
       const response = await axios.post(
         `${port}/api/login`,
         formData
       );
-      toast.success(response.data.message);
+     const token = response.data.token
+      localStorage.setItem("token", token);
+
+    toast.success(response.data.message);
 
 
       setFormData({
@@ -41,7 +44,7 @@ function LoginPage() {
         password: ""
       });
 
-        navigate("/")
+        navigate("/chat")
 
     } catch (error) {
 

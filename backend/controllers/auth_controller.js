@@ -65,7 +65,7 @@ const payload = {
 const token = jwt.sign(
   payload,
   process.env.JWT_SECRET,
-  { expiresIn: "1m" }
+  { expiresIn: "7d" }
 );
 
 console.log(token);
@@ -83,24 +83,34 @@ console.log(token);
     });
   }
 };
-
 const getProfile = async (req, res) => {
     try {
         const userId = req.user._id;
         const getUser = await User.findById(userId).select("-password");
         res.status(200).json({
-            message: "this is Profile page ",
+            message: " Get Profile",
             user: getUser
         });
     } catch (error) {
         res.status(500).json({ message: "server error" })
     }
 };
-
 const updateProfile = async (req, res) => {
     try {
         const userId = req.user._id
-        const updateUser = await User.findByIdAndUpdate(userId ,req.body, {new:true})
+
+        const updateData = {...req.body}
+
+        if (req.fullName) {
+            updateData.fullName = req.body.fullName
+        }
+        if (req.email) {
+            updateData.email = req.body.email
+        }
+        if (req.imageUrl) {
+            updateData.profilePic = req.imageUrl
+        }
+        const updateUser = await User.findByIdAndUpdate(userId, updateData, { new: true })
 
         res.status(200).json({
             message: "Profile update successfully",
@@ -124,6 +134,22 @@ const getAllContacts = async (req, res) => {
 
     }
 }
+const imageupload = async (req, res) => {
+    try {
+        console.log(req.file)
+
+        res.status(200).json({
+            message: "image upload",
+            file: req.file,
+            image: req.imageUrl
+        })
+    } catch (error) {
+
+    }
+}
 
 
-export {signUp , login,getProfile,updateProfile,getAllContacts};
+
+
+
+export {signUp , login,getProfile,updateProfile,getAllContacts,imageupload};

@@ -9,12 +9,14 @@ import { useState } from "react";
 const Profile = () => {
 
   const [formData, setFormData] = useState({
-    fullName: "", email: "", profilePic: ""
+    name: "", email: "", profilePic: ""
   })
   const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token")
+
+  
 
   const fetchProfile = async () => {
     try {
@@ -22,7 +24,7 @@ const Profile = () => {
       // await new Promise((resolve) => {
       //   setTimeout(resolve, 3000)
       // })
-         const port=import.meta.env.VITE_API_URL;
+        const port=import.meta.env.VITE_API_URL;
       const res = await axios.get(`${port}/api/getProfile`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -37,6 +39,30 @@ const Profile = () => {
       setLoading(false)
     }
   }
+  const handleUpdateProfile = async () => {
+    try {
+      const data = new FormData();
+      data.append("name", formData.name)
+      data.append("email", formData.email)
+      if (selectedImage) {
+        data.append("profileImage", selectedImage)
+      }
+      const port=import.meta.env.VITE_API_URL;
+      const res = await axios.put(`${port}/api/updateProfile`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      console.log(res.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+
   useEffect(() => {
     fetchProfile()
   }, [])
@@ -62,7 +88,7 @@ const Profile = () => {
       {/* Profile Header */}
       <div className="bg-primary pb-8 pt-4 flex flex-col items-center">
         <label className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center cursor-pointer overflow-hidden mb-3">
-          <span className="text-white text-3xl font-medium">V</span>
+          <span className="text-white text-3xl font-medium">H</span>
 
           <input
             type="file"
@@ -71,7 +97,7 @@ const Profile = () => {
           />
         </label>
 
-        <p className="text-white font-medium">{formData.fullName}</p>
+        <p className="text-white font-medium">{formData.name}</p>
         <p className="text-white/70 text-sm">{formData.email}</p>
       </div>
 
@@ -89,8 +115,10 @@ const Profile = () => {
               </label>
               <input
                 type="text"
+                name="name"
                 placeholder="Enter Full Name"
-                value={formData.fullName}
+                value={formData.name}
+                onChange={handleChange}
                 className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#00BFA5]"
               />
             </div>
@@ -101,8 +129,10 @@ const Profile = () => {
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="Enter Email"
                 value={formData.email}
+                onChange={handleChange}
                 className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#00BFA5]"
               />
             </div>
@@ -111,6 +141,7 @@ const Profile = () => {
 
         {/* Update Button */}
         <button className="bg-primary text-white rounded-full py-3 text-sm font-medium">
+          onClick={handleUpdateProfile}
           Update Profile
         </button>
 
