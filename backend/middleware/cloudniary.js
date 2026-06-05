@@ -1,4 +1,4 @@
-import  cloudinary from "../config/cloudniiaryConnection";
+import  cloudinary from "../config/cloudniiaryConnection.js";
 
 const uploadToCloudinary = async(req ,res,next)=>{
     try {

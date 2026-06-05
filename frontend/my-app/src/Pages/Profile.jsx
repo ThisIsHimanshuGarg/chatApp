@@ -140,8 +140,9 @@ const Profile = () => {
         </div>
 
         {/* Update Button */}
-        <button className="bg-primary text-white rounded-full py-3 text-sm font-medium">
-          onClick={handleUpdateProfile}
+        <button className="bg-primary text-white rounded-full py-3 text-sm font-medium"
+            onClick={handleUpdateProfile}
+          >
           Update Profile
         </button>
 
