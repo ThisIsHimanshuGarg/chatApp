@@ -101,14 +101,14 @@ const updateProfile = async (req, res) => {
 
         const updateData = {...req.body}
 
-        if (req.fullName) {
-            updateData.fullName = req.body.fullName
+        if (req.name) {
+            updateData.name = req.body.name
         }
         if (req.email) {
             updateData.email = req.body.email
         }
         if (req.imageUrl) {
-            updateData.profilePic = req.imageUrl
+            updateData.profilePic = req.body.imageUrl
         }
         const updateUser = await User.findByIdAndUpdate(userId, updateData, { new: true })
 
