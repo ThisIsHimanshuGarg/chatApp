@@ -9,6 +9,8 @@ import Chat from './pages/Chat'
 import Group from './pages/Group'
 import Profile from './pages/Profile'
 import Page from './Pages/Page';
+import { io } from "socket.io-client"
+import { useEffect, useRef } from 'react'
 
 const router = createBrowserRouter([
   {
@@ -55,6 +57,25 @@ const router = createBrowserRouter([
 ])
 
 const App = () => {
+  const token = localStorage.getItem("token")
+
+  const socketRef = useRef()
+
+  useEffect(() => {
+    const port=import.meta.env.VITE_API_URL;
+    socketRef.current = io(`${port}`, {
+      auth: { token }
+    })
+    socketRef.current.on("connect", () => {
+      console.log("connected", socketRef.current.id);
+    })
+    socketRef.current.on("onlineUser", (m) => {
+      console.log("onlineUser", m);
+    })
+
+  }, [token])
+
+
   return (
     <>
       <ToastContainer 

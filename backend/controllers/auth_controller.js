@@ -95,20 +95,20 @@ const getProfile = async (req, res) => {
         res.status(500).json({ message: "server error" })
     }
 };
-const updateProfile = async (req, res) => {
+    const updateProfile = async (req, res) => {
     try {
         const userId = req.user._id
 
         const updateData = {...req.body}
 
-        if (req.name) {
+        if (req.body.name) {
             updateData.name = req.body.name
         }
-        if (req.email) {
+        if (req.body.email) {
             updateData.email = req.body.email
         }
         if (req.imageUrl) {
-            updateData.profilePic = req.body.imageUrl
+            updateData.profilePic =  req.imageUrl
         }
         const updateUser = await User.findByIdAndUpdate(userId, updateData, { new: true })
 
