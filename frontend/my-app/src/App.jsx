@@ -1,5 +1,5 @@
 
-import React from 'react'
+
 import Login from './Pages/Login'
 import Signup from './Pages/Signup'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
@@ -10,7 +10,8 @@ import Group from './pages/Group'
 import Profile from './pages/Profile'
 import Page from './Pages/Page';
 import { io } from "socket.io-client"
-import { useEffect, useRef } from 'react'
+import React,{ useEffect, useRef ,useState} from 'react'
+import { SocketContext } from './context/socketContext';
 
 const router = createBrowserRouter([
   {
@@ -57,13 +58,18 @@ const router = createBrowserRouter([
 ])
 
 const App = () => {
+
+  const [socketConnected, setSocketConnected] = useState(false)
+  const [onlineUsers, setOnlineUsers] = useState([])
+
   const token = localStorage.getItem("token")
 
   const socketRef = useRef()
 
   useEffect(() => {
     const port=import.meta.env.VITE_API_URL;
-    socketRef.current = io(`${port}`, {
+    console.log(port);
+    socketRef.current = io(`http://localhost:5000`, {
       auth: { token }
     })
     socketRef.current.on("connect", () => {
@@ -71,6 +77,7 @@ const App = () => {
     })
     socketRef.current.on("onlineUser", (m) => {
       console.log("onlineUser", m);
+      setOnlineUsers(m);
     })
 
   }, [token])
@@ -78,11 +85,13 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer 
+     <SocketContext.Provider value={{ token, socketConnected, onlineUsers,socketRef }}>
+          <ToastContainer 
         position='top-right'
         autoClose={3000}
         />
       <RouterProvider router={router} />
+     </SocketContext.Provider>
     </>
   )
 }

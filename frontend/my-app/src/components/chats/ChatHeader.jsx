@@ -1,8 +1,35 @@
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useFetcher, useNavigate, useParams } from "react-router-dom";
+import { useSocket } from "../../context/socketContext";
+import axios from "axios";
+import { useEffect , useState} from "react";
 
 const ChatHeader = () => {
+   const [selectedUser ,setSelectedUser] = useState()
+   const { token, socketConnected, onlineUsers } = useSocket()
   const navigate = useNavigate();
+   const { userId } = useParams();
+
+     //console.log(onlineUsers);
+
+   const fetchUser = async () => {
+    const port=import.meta.env.VITE_API_URL;
+    try {
+      const res = await axios.get(`${port}/api/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      //console.log(res.data.data);
+       setSelectedUser(res.data.data)
+    } catch (error) {
+      console.log(error.response);
+
+    }
+  }
+  useEffect(() => {
+    fetchUser()
+  }, [userId])
 
   return (
     <div className="px-4 py-3 bg-[#075E54] flex items-center gap-3">
@@ -16,13 +43,21 @@ const ChatHeader = () => {
       <div
         className="w-9 h-9 rounded-full bg-white text-[#272626] flex items-center justify-center font-medium text-lg overflow-hidden cursor-pointer"
       >
-        A
+         {
+          selectedUser?.profilePic?(
+            <img src={selectedUser?.profilePic} className="w-full h-full object-cover rounded-full" />
+          ):(
+            <span >
+              {selectedUser?.fullName?.charAt(0)?.toUpperCase()}
+            </span>
+          )
+        }
       </div>
 
       <div>
-        <p className="text-white font-medium text-sm">User Name</p>
+        <p className="text-white font-medium text-sm">{selectedUser?.name}</p>
         <p className="text-xs text-green-300">
-          🟢 Online
+           {onlineUsers.includes(userId)?"🟢 Online" :" ⚫ Offline"}
         </p>
       </div>
     </div>

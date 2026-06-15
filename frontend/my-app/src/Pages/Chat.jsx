@@ -1,18 +1,20 @@
-import React from 'react'
 import ChatHeader from '../components/chats/ChatHeader'
 import MessageArea from '../components/chats/MessageArea'
 import InputBar from '../components/chats/InputBar'
 import { useParams } from 'react-router-dom'
+import { useState } from 'react'
 
 const Chat = () => {
-  const {userId} = useParams;
-  console.log(userId);
-  
+ 
+   const [messages, setMessages] = useState([])
   return (
     <>
-      <ChatHeader/>
-      <MessageArea/>
-      <InputBar/>
+     <div className='flex flex-col h-screen'>
+        <ChatHeader />
+        <MessageArea  setMessages={setMessages} messages={messages}/>
+        <InputBar setMessages={setMessages} />
+        </div>
+     
     </>
   )
 }

@@ -28,13 +28,13 @@ function LoginPage() {
     try {
       setLoading(true)
       const port= import.meta.env.VITE_API_URL;
-
       const response = await axios.post(
         `${port}/api/login`,
         formData
       );
      const token = response.data.token
       localStorage.setItem("token", token);
+      localStorage.setItem("user" ,JSON.stringify(response.data.data))
 
     toast.success(response.data.message);
 

@@ -1,21 +1,45 @@
 import  cloudinary from "../config/cloudniiaryConnection.js";
 
-const uploadToCloudinary = async(req ,res,next)=>{
+const uploadToCloudinary = async (req, res, next) => {
     try {
-        if(!req.file){
-           return next()
+        // if no files, move forward
+        if (!req.files) {
+            return next();
         }
-        const result = await cloudinary.uploader.upload(req.file.path,{
-           folder:"chatingApp" 
-        })
-        console.log("result",result);
-        req.public_id = result.public_id;
-        req.imageUrl = result.secure_url
-        next()
-    } catch (error) {
-        console.log("cloudinary error", error.message);
-        res.status(500).json({message:"cloudinary error"})
-    }
-}
 
-export default uploadToCloudinary
+        req.imageUrl = [];
+        req.videoUrl = [];
+        req.audioUrl = [];
+
+        for (const file of req.files) {
+            const result = await cloudinary.uploader.upload(file.path, {
+                resource_type: "auto",
+                folder: "chattingApp"
+            });
+
+            if (file.mimetype.startsWith("image")) {
+                req.imageUrl.push(result.secure_url);
+            }
+
+            else if (file.mimetype.startsWith("video")) {
+                req.videoUrl.push(result.secure_url);
+            }
+
+            else if (file.mimetype.startsWith("audio")) {
+                req.audioUrl.push(result.secure_url);
+            }
+        }
+
+        return next();
+
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+        return res.status(500).json({
+            message: "File upload failed",
+            error: error.message
+        });
+    }
+};
+
+export default uploadToCloudinary;
+

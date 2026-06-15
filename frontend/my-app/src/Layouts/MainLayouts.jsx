@@ -49,7 +49,7 @@ const MainLayout = () => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(res.data.data);
+           // console.log(res.data.data);
             setContacts(res.data.data)
         } catch (error) {
             console.log(error.response)
