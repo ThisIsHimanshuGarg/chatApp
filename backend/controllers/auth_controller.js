@@ -107,8 +107,11 @@ const getProfile = async (req, res) => {
         if (req.body.email) {
             updateData.email = req.body.email
         }
+          
+        console.log("image url", req.imageUrl);
+
         if (req.imageUrl) {
-            updateData.profilePic =  req.imageUrl
+            updateData.profilePic =  req.imageUrl[0]
         }
         const updateUser = await User.findByIdAndUpdate(userId, updateData, { new: true })
 
@@ -148,8 +151,40 @@ const imageupload = async (req, res) => {
     }
 }
 
+const googleLogin = async (req, res) => {
+    try {
+        const { email, name, profilePic, googleId } = req.body;
+        let user = await User.findOne({ email });
+        if (!user) {
+            user = await User.create({
+                email, name, profilePic, googleId
+            })
+        } else {
+            user.name = name;
+            user.profilePic = profilePic;
+            user.googleId = googleId
+            await user.save()
+        }
+        const payload = {
+            userId: user._id,
+            name: user.name,
+            email: user.email,
+        };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "365d",
+        });
+
+        res.status(200).json({
+            message: "login successfully",
+            data: { user, token },
+        });
+    } catch (error) {
+        console.log("google login error", error);
+        res.status(500).json({ message: "server error" })
+    }
+};
 
 
 
 
-export {signUp , login,getProfile,updateProfile,getAllContacts,imageupload};
+export {signUp , login,getProfile,updateProfile,getAllContacts,imageupload,googleLogin};

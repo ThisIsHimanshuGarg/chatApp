@@ -3,6 +3,7 @@ import { Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { signInWithGoogle } from "../config/firebase"
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -32,9 +33,9 @@ function LoginPage() {
         `${port}/api/login`,
         formData
       );
-     const token = response.data.token
+     const token = response.data.data.token
       localStorage.setItem("token", token);
-      localStorage.setItem("user" ,JSON.stringify(response.data.data))
+      localStorage.setItem("user" ,JSON.stringify(response.data.data.user))
 
     toast.success(response.data.message);
 
@@ -61,7 +62,26 @@ function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const googleUser = await signInWithGoogle();
+      const port= import.meta.env.VITE_API_URL;
+      const res = await axios.post(`${port}/api/googleLogin`, {
+        email: googleUser.email,
+        fullName: googleUser.displayName,
+        profilePic: googleUser.photoURL,
+        googleId: googleUser.uid,
+      })
+      const token = res.data.data.token;
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(res.data.data.user))
+      
+      navigate("/chat")
 
+    } catch (error) {
+      console.log("google login error", error);
+    }
+  }
   return (
     <div className="bg-gray-200 min-h-screen">
 
@@ -152,6 +172,7 @@ function LoginPage() {
           {/* Google Button */}
           <button
             className="w-full border border-gray-300 mt-3 py-3  rounded-full flex items-center justify-center gap-3 hover:bg-gray-100 transition"
+            onClick={handleGoogleLogin}
           >
             <img
               src="https://cdn-icons-png.flaticon.com/512/281/281764.png"

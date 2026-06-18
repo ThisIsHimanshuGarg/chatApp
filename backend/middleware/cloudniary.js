@@ -3,7 +3,7 @@ import  cloudinary from "../config/cloudniiaryConnection.js";
 const uploadToCloudinary = async (req, res, next) => {
     try {
         // if no files, move forward
-        if (!req.files) {
+        if (!req.files&& !req.file) {
             return next();
         }
 
@@ -11,7 +11,9 @@ const uploadToCloudinary = async (req, res, next) => {
         req.videoUrl = [];
         req.audioUrl = [];
 
-        for (const file of req.files) {
+         const files = req.files || [req.file]
+
+        for (const file of files) {
             const result = await cloudinary.uploader.upload(file.path, {
                 resource_type: "auto",
                 folder: "chattingApp"

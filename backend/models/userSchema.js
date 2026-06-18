@@ -17,11 +17,15 @@ const userSchema = new mongoose.Schema({
     minlength:8,
     require:true,
   },
+
   profilepic:{
 
     type:String,
     default:"",
   },
+  googleId:{
+        type:String
+    },
 });
 
 const User = mongoose.model("User", userSchema);
